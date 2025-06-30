@@ -31,7 +31,9 @@ function Confetti () {
 
 function playBeep() {
 	try {
-		const ctx = new (window.AudioContext || (window as any).webkitAudioContext)()
+		const AudioCtx = (window.AudioContext || (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext)
+		if (!AudioCtx) return
+		const ctx = new AudioCtx()
 		const o = ctx.createOscillator()
 		const g = ctx.createGain()
 		o.type = 'sine'
@@ -123,7 +125,7 @@ export default function GoalPage () {
 			<div className='flex flex-1 flex-col items-center justify-center p-4'>
 				<Card className='w-full max-w-md sm:max-w-lg shadow-2xl border-0 bg-white/95 dark:bg-gray-900/95 rounded-2xl fade-in p-4 sm:p-6'>
 					<CardHeader>
-						<CardTitle className='text-center text-xl sm:text-2xl font-extrabold tracking-tight mb-2 text-indigo-700 dark:text-indigo-300'>Today's Water Goal</CardTitle>
+						<CardTitle className='text-center text-xl sm:text-2xl font-extrabold tracking-tight mb-2 text-indigo-700 dark:text-indigo-300'>Today&rsquo;s Water Goal</CardTitle>
 						<p className='text-center text-gray-500 dark:text-gray-400 text-sm sm:text-base font-medium'>
 							Goal: <span className='font-bold text-indigo-600 dark:text-indigo-300'>{goal} liters</span>
 						</p>
