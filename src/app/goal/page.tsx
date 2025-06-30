@@ -1,7 +1,7 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card'
 import { Button } from '../../components/ui/button'
 import { Navbar } from '../../components/navbar'
@@ -29,9 +29,9 @@ function Confetti () {
 	)
 }
 
-function playBeep() {
+function playBeep () {
 	try {
-		const ctx = new (window.AudioContext || (window as any).webkitAudioContext)()
+		const ctx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)()
 		const o = ctx.createOscillator()
 		const g = ctx.createGain()
 		o.type = 'sine'
@@ -123,7 +123,7 @@ export default function GoalPage () {
 			<div className='flex flex-1 flex-col items-center justify-center p-4'>
 				<Card className='w-full max-w-md sm:max-w-lg shadow-2xl border-0 bg-white/95 dark:bg-gray-900/95 rounded-2xl fade-in p-4 sm:p-6'>
 					<CardHeader>
-						<CardTitle className='text-center text-xl sm:text-2xl font-extrabold tracking-tight mb-2 text-indigo-700 dark:text-indigo-300'>Today's Water Goal</CardTitle>
+						<CardTitle className='text-center text-xl sm:text-2xl font-extrabold tracking-tight mb-2 text-indigo-700 dark:text-indigo-300'>Today&apos;s Water Goal</CardTitle>
 						<p className='text-center text-gray-500 dark:text-gray-400 text-sm sm:text-base font-medium'>
 							Goal: <span className='font-bold text-indigo-600 dark:text-indigo-300'>{goal} liters</span>
 						</p>
