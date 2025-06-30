@@ -29,9 +29,9 @@ function Confetti () {
 	)
 }
 
-function playBeep () {
+function playBeep() {
 	try {
-		const ctx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)()
+		const ctx = new (window.AudioContext || (window as any).webkitAudioContext)()
 		const o = ctx.createOscillator()
 		const g = ctx.createGain()
 		o.type = 'sine'
