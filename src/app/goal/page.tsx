@@ -1,6 +1,6 @@
 'use client'
-export const dynamic = 'force-dynamic'
 
+import { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card'
@@ -48,7 +48,7 @@ function playBeep() {
   } catch {}
 }
 
-export default function GoalPage() {
+function GoalTracker() {
   const params = useSearchParams()
   const goal = Number(params.get('goal')) || 2
   const perHourParam = params.get('perHour')
@@ -122,34 +122,32 @@ export default function GoalPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex flex-col">
-      <Navbar active="goal" />
-      <div className="flex flex-1 flex-col items-center justify-center p-4">
-        <Card className="w-full max-w-md sm:max-w-lg shadow-2xl border-0 bg-white/95 dark:bg-gray-900/95 rounded-2xl fade-in p-4 sm:p-6">
-          <CardHeader>
-            <CardTitle className="text-center text-xl sm:text-2xl font-extrabold tracking-tight mb-2 text-indigo-700 dark:text-indigo-300">
-              Today&rsquo;s Water Goal
-            </CardTitle>
-            <p className="text-center text-gray-500 dark:text-gray-400 text-sm sm:text-base font-medium">
-              Goal: <span className="font-bold text-indigo-600 dark:text-indigo-300">{goal} liters</span>
-            </p>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col items-center gap-4 sm:gap-6">
-              <div className="w-full flex flex-col items-center gap-2">
-                <div className="w-full h-20 sm:h-24 relative mb-2 flex items-end">
-                  <div className="absolute inset-0 flex items-end">
-                    <svg viewBox="0 0 400 100" className="w-full h-full" preserveAspectRatio="none">
-                      <defs>
-                        <linearGradient id="water-gradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#818cf8" />
-                          <stop offset="100%" stopColor="#6366f1" />
-                        </linearGradient>
-                      </defs>
-                      <path
-                        id="wave"
-                        fill="url(#water-gradient)"
-                        d={`
+    <>
+      <Card className="w-full max-w-md sm:max-w-lg shadow-2xl border-0 bg-white/95 dark:bg-gray-900/95 rounded-2xl fade-in p-4 sm:p-6">
+        <CardHeader>
+          <CardTitle className="text-center text-xl sm:text-2xl font-extrabold tracking-tight mb-2 text-indigo-700 dark:text-indigo-300">
+            Today&rsquo;s Water Goal
+          </CardTitle>
+          <p className="text-center text-gray-500 dark:text-gray-400 text-sm sm:text-base font-medium">
+            Goal: <span className="font-bold text-indigo-600 dark:text-indigo-300">{goal} liters</span>
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col items-center gap-4 sm:gap-6">
+            <div className="w-full flex flex-col items-center gap-2">
+              <div className="w-full h-20 sm:h-24 relative mb-2 flex items-end">
+                <div className="absolute inset-0 flex items-end">
+                  <svg viewBox="0 0 400 100" className="w-full h-full" preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="water-gradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#818cf8" />
+                        <stop offset="100%" stopColor="#6366f1" />
+                      </linearGradient>
+                    </defs>
+                    <path
+                      id="wave"
+                      fill="url(#water-gradient)"
+                      d={`
                           M0,${100 - percent}
                           Q50,${90 - percent * 0.7} 100,${100 - percent}
                           T200,${100 - percent}
@@ -157,47 +155,76 @@ export default function GoalPage() {
                           T400,${100 - percent}
                           L400,100 L0,100 Z
                         `}
-                        style={{ transition: 'd 1s cubic-bezier(0.22,1,0.36,1)' }}
-                      />
-                    </svg>
-                  </div>
-                  <div
-                    className="absolute left-0 bottom-0 h-full rounded-full pointer-events-none shimmer-mask"
-                    style={{
-                      width: `${percent}%`,
-                      transition: 'width 1s cubic-bezier(0.22,1,0.36,1)',
-                    }}
-                  />
-                  <div className="relative w-full flex justify-center items-center h-full z-10">
-                    <span className="text-lg sm:text-xl font-bold text-indigo-800 dark:text-indigo-100 drop-shadow-lg">
-                      {Math.round(percent)}%
-                    </span>
-                  </div>
+                      style={{ transition: 'd 1s cubic-bezier(0.22,1,0.36,1)' }}
+                    />
+                  </svg>
                 </div>
-                <p className="text-base sm:text-lg font-bold text-indigo-700 dark:text-indigo-200">
-                  Drunk: {drunk} L / {goal} L
-                </p>
-                <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400">Remaining: {remaining} L</p>
+                <div
+                  className="absolute left-0 bottom-0 h-full rounded-full pointer-events-none shimmer-mask"
+                  style={{
+                    width: `${percent}%`,
+                    transition: 'width 1s cubic-bezier(0.22,1,0.36,1)',
+                  }}
+                />
+                <div className="relative w-full flex justify-center items-center h-full z-10">
+                  <span className="text-lg sm:text-xl font-bold text-indigo-800 dark:text-indigo-100 drop-shadow-lg">
+                    {Math.round(percent)}%
+                  </span>
+                </div>
               </div>
-              <div className="flex flex-col items-center gap-2">
-                <p className="text-sm sm:text-base font-semibold text-indigo-600 dark:text-indigo-300">
-                  Next drink in: <span className="font-mono">{formatTime(timer)}</span>
-                </p>
-                <p className="text-sm sm:text-base font-semibold text-indigo-600 dark:text-indigo-300">
-                  Per hour: <span className="font-mono">{perHour} ml</span>
-                </p>
-                <Button
-                  onClick={handleDrink}
-                  className="mt-2 w-40 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-bold py-3 rounded-xl transition-all duration-200"
-                >
-                  I Drank Water
-                </Button>
-              </div>
+              <p className="text-base sm:text-lg font-bold text-indigo-700 dark:text-indigo-200">
+                Drunk: {drunk} L / {goal} L
+              </p>
+              <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400">Remaining: {remaining} L</p>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+            <div className="flex flex-col items-center gap-2">
+              <p className="text-sm sm:text-base font-semibold text-indigo-600 dark:text-indigo-300">
+                Next drink in: <span className="font-mono">{formatTime(timer)}</span>
+              </p>
+              <p className="text-sm sm:text-base font-semibold text-indigo-600 dark:text-indigo-300">
+                Per hour: <span className="font-mono">{perHour} ml</span>
+              </p>
+              <Button
+                onClick={handleDrink}
+                className="mt-2 w-40 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-bold py-3 rounded-xl transition-all duration-200"
+              >
+                I Drank Water
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
       {showConfetti && <Confetti />}
+    </>
+  )
+}
+
+function LoadingSkeleton() {
+	return (
+		<Card className="w-full max-w-md sm:max-w-lg shadow-2xl border-0 bg-white/95 dark:bg-gray-900/95 rounded-2xl p-4 sm:p-6 animate-pulse">
+			<CardHeader>
+				<div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mx-auto"></div>
+				<div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mx-auto mt-2"></div>
+			</CardHeader>
+			<CardContent>
+				<div className="h-20 sm:h-24 w-full bg-gray-200 dark:bg-gray-700 rounded-lg mt-4"></div>
+				<div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mx-auto mt-4"></div>
+				<div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mx-auto mt-2"></div>
+				<div className="h-12 bg-gray-300 dark:bg-gray-600 rounded-xl w-40 mx-auto mt-6"></div>
+			</CardContent>
+		</Card>
+	)
+}
+
+export default function GoalPage() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex flex-col">
+      <Navbar active="goal" />
+      <div className="flex flex-1 flex-col items-center justify-center p-4">
+        <Suspense fallback={<LoadingSkeleton />}>
+          <GoalTracker />
+        </Suspense>
+      </div>
     </div>
   )
 }
