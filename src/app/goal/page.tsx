@@ -31,6 +31,7 @@ function Confetti () {
 
 function playBeep() {
 	try {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const ctx = new (window.AudioContext || (window as any).webkitAudioContext)()
 		const o = ctx.createOscillator()
 		const g = ctx.createGain()
