@@ -4,6 +4,7 @@ import { Suspense, useEffect, useRef, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card'
 import { Button } from '../../components/ui/button'
 import { Navbar } from '../../components/navbar'
+import { useWaterGoal } from '../../hooks/useWaterGoal'
 
 function Confetti () {
 	// Simple confetti animation using CSS
@@ -49,31 +50,13 @@ function playBeep() {
 	const goal = Number(params.get('goal')) || 2
 	const perHourParam = params.get('perHour')
 	const perHour = perHourParam ? Number(perHourParam) : Math.round((goal * 1000) / 16)
-	const [drunk, setDrunk] = useState(0)
-	const [hour, setHour] = useState(0)
-	const [timer, setTimer] = useState(3600)
+	
+	// Use Convex for data management
+	const { currentState, updateProgress, isLoading } = useWaterGoal(goal, perHour)
+	const { drunk, hour, timer } = currentState
+	
 	const [showConfetti, setShowConfetti] = useState(false)
 	const timerRef = useRef<NodeJS.Timeout | null>(null)
-
-	// Load from localStorage on mount
-	useEffect(() => {
-		const saved = localStorage.getItem('water-goal-state')
-		if (saved) {
-			try {
-				const { drunk, hour, timer, goal: savedGoal } = JSON.parse(saved)
-				if (Number(savedGoal) === goal) {
-					setDrunk(drunk)
-					setHour(hour)
-					setTimer(timer)
-				}
-			} catch {}
-		}
-	}, [goal])
-
-	// Save to localStorage on changes
-	useEffect(() => {
-		localStorage.setItem('water-goal-state', JSON.stringify({ drunk, hour, timer, goal }))
-	}, [drunk, hour, timer, goal])
 
 	const percent = Math.min((drunk / goal) * 100, 100)
 	const remaining = Math.max(goal - drunk, 0)
@@ -91,29 +74,50 @@ function playBeep() {
 		if (timerRef.current) clearInterval(timerRef.current)
 		if (drunk >= goal) return
 		timerRef.current = setInterval(() => {
-			setTimer(t => {
-				if (t <= 1) {
-					setHour(h => h + 1)
-					playBeep()
-					alert('Time to drink your next glass of water!')
-					return 3600
-				}
-				return t - 1
-			})
+			const newTimer = timer <= 1 ? 3600 : timer - 1
+			const newHour = timer <= 1 ? hour + 1 : hour
+			
+			if (timer <= 1) {
+				playBeep()
+				alert('Time to drink your next glass of water!')
+			}
+			
+			updateProgress(drunk, newHour, newTimer)
 		}, 1000)
 		return () => {
 			if (timerRef.current) clearInterval(timerRef.current)
 		}
-	}, [hour, drunk, goal])
+	}, [hour, drunk, goal, timer, updateProgress])
 
 	const handleDrink = () => {
-		if (drunk < goal) setDrunk(d => Math.round((d + goal / 8) * 10) / 10)
+		if (drunk < goal) {
+			const newDrunk = Math.round((drunk + goal / 8) * 10) / 10
+			updateProgress(newDrunk, hour, timer)
+		}
 	}
 
 	const formatTime = (s: number) => {
 		const m = Math.floor(s / 60)
 		const sec = s % 60
 		return `${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`
+	}
+
+	// Show loading state while Convex is loading
+	if (isLoading) {
+		return (
+			<div className='min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex flex-col'>
+				<Navbar active='goal' />
+				<div className='flex flex-1 flex-col items-center justify-center px-2 sm:px-0'>
+					<Card className='w-full max-w-lg shadow-2xl border-0 bg-white/95 dark:bg-gray-900/95 rounded-2xl fade-in p-4 sm:p-6'>
+						<CardContent>
+							<div className='flex flex-col items-center gap-6'>
+								<p className='text-lg font-semibold text-indigo-600 dark:text-indigo-300'>Loading your water goal...</p>
+							</div>
+						</CardContent>
+					</Card>
+				</div>
+			</div>
+		)
 	}
 
 	return (

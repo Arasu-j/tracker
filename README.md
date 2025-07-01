@@ -1,24 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Water Tracking App
+
+A Next.js water tracking application that helps users set daily water intake goals and track their progress. The app uses [Convex](https://convex.dev) for real-time data storage and synchronization.
+
+## Features
+
+- Set personalized water intake goals based on weight
+- Real-time progress tracking with visual water level indicator
+- Timer-based reminders for drinking water
+- Persistent data storage with Convex
+- Responsive design with dark mode support
+
+## Tech Stack
+
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **Styling**: Tailwind CSS, Shadcn UI
+- **Database**: Convex (real-time backend)
+- **State Management**: Convex queries and mutations
 
 ## Getting Started
 
-First, run the development server:
+First, install dependencies:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
+```
+
+Then, run the development server:
+
+```bash
 pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Convex Setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The app uses Convex for data persistence. The Convex backend is automatically set up when you run the development server.
+
+To deploy Convex functions:
+
+```bash
+pnpm convex:deploy
+```
+
+## Data Storage
+
+All water goal data is stored in Convex instead of localStorage, providing:
+- Real-time synchronization across devices
+- Persistent data storage
+- Better scalability and reliability
 
 ## Learn More
 
