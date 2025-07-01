@@ -31,12 +31,12 @@ export default function Home () {
 	return (
 		<div className='min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex flex-col'>
 			<Navbar active='home' />
-			<main className='flex flex-1 items-center justify-center p-4'>
+			<main className='flex flex-1 items-center justify-center'>
 				<div className='flex w-full justify-center items-center min-h-[calc(100vh-80px)]'>
-					<Card className='w-full max-w-md shadow-2xl border-0 bg-white/95 dark:bg-gray-900/95 rounded-2xl fade-in p-4 sm:p-6'>
+					<Card className='w-full max-w-md shadow-2xl border-0 bg-white/95 dark:bg-gray-900/95 rounded-2xl fade-in'>
 						<CardHeader>
-							<CardTitle className='text-center text-2xl sm:text-3xl font-extrabold tracking-tight mb-2 text-indigo-700 dark:text-indigo-300'>Welcome</CardTitle>
-							<p className='text-center text-gray-500 dark:text-gray-400 text-sm sm:text-base font-medium'>Enter your height and weight to continue</p>
+							<CardTitle className='text-center text-3xl font-extrabold tracking-tight mb-2 text-indigo-700 dark:text-indigo-300'>Welcome</CardTitle>
+							<p className='text-center text-gray-500 dark:text-gray-400 text-base font-medium'>Enter your height and weight to continue</p>
 						</CardHeader>
 						<CardContent>
 							<form className='flex flex-col gap-6' onSubmit={e => { e.preventDefault(); handleNext() }}>

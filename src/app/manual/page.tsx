@@ -25,11 +25,11 @@ export default function ManualPage () {
 	return (
 		<div className='min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex flex-col'>
 			<Navbar active='goal' />
-			<div className='flex flex-1 flex-col items-center justify-center p-4'>
-				<Card className='w-full max-w-md shadow-2xl border-0 bg-white/95 dark:bg-gray-900/95 rounded-2xl fade-in p-4 sm:p-6'>
+			<div className='flex flex-1 flex-col items-center justify-center'>
+				<Card className='w-full max-w-md shadow-2xl border-0 bg-white/95 dark:bg-gray-900/95 rounded-2xl fade-in'>
 					<CardHeader>
-						<CardTitle className='text-center text-xl sm:text-2xl font-extrabold tracking-tight mb-2 text-indigo-700 dark:text-indigo-300'>Set Your Own Water Goal</CardTitle>
-						<p className='text-center text-gray-500 dark:text-gray-400 text-sm sm:text-base font-medium'>Customize your daily and hourly water intake</p>
+						<CardTitle className='text-center text-2xl font-extrabold tracking-tight mb-2 text-indigo-700 dark:text-indigo-300'>Set Your Own Water Goal</CardTitle>
+						<p className='text-center text-gray-500 dark:text-gray-400 text-base font-medium'>Customize your daily and hourly water intake</p>
 					</CardHeader>
 					<CardContent>
 						<form className='flex flex-col gap-6' onSubmit={handleSubmit}>
